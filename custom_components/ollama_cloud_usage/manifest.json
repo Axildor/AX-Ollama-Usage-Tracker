@@ -1,6 +1,6 @@
 {
   "domain": "ollama_cloud_usage",
-  "name": "Ollama Cloud Usage",
+  "name": "AX Ollama Usage Tracker",
   "codeowners": [
     "@Axildor"
   ],
@@ -13,5 +13,5 @@
     "ollama_cloud_usage"
   ],
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

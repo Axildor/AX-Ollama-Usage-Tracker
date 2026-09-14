@@ -3,7 +3,7 @@
 [![Validate](https://img.shields.io/github/actions/workflow/status/Axildor/AX-Ollama-Usage-Tracker/validate.yml?branch=main&label=Validate&style=flat-square)](https://github.com/Axildor/AX-Ollama-Usage-Tracker/actions/workflows/validate.yml)
 [![Buy me a tea](https://img.shields.io/badge/Buy_me_a_tea-☕-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/axildor)
 
-# Ollama Cloud Usage for Home Assistant
+# AX Ollama Usage Tracker for Home Assistant
 
 A [Home Assistant](https://www.home-assistant.io) custom integration (HACS) that
 exposes your **ollama.com cloud usage limits** as sensors — so you can see how
@@ -44,10 +44,10 @@ Create an API key at **ollama.com → Settings → API keys**.
 **HACS (recommended)**
 1. Add this repository as a **custom repository** in HACS (category:
    `integration`).
-2. Install **Ollama Cloud Usage**.
+2. Install **AX Ollama Usage Tracker**.
 3. Restart Home Assistant.
 4. Add the integration via **Settings → Devices & Services → Add
-   Integration → Ollama Cloud Usage**.
+   Integration → AX Ollama Usage Tracker**.
 
 **Manual**
 1. Copy `custom_components/ollama_cloud_usage` into your

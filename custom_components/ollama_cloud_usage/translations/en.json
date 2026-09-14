@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Ollama Cloud Usage",
+        "title": "AX Ollama Usage Tracker",
         "description": "Connect to ollama.com cloud usage limits. {api_key_help}",
         "data": {
           "name": "Name",
@@ -18,7 +18,7 @@
         }
       },
       "reauth_confirm": {
-        "title": "Re-authenticate Ollama Cloud Usage",
+        "title": "Re-authenticate AX Ollama Usage Tracker",
         "description": "Your Ollama Cloud API key was rejected. Enter a new key (create at ollama.com → Settings → API keys).",
         "data": {
           "api_key": "API key"
@@ -36,7 +36,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Ollama Cloud Usage options",
+        "title": "AX Ollama Usage Tracker options",
         "data": {
           "scan_interval": "Scan interval (seconds)"
         }

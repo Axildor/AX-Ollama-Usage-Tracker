@@ -122,7 +122,7 @@ class OllamaUsageUpdateCoordinator(DataUpdateCoordinator[OllamaUsageCoordinatorD
         super().__init__(
             hass,
             LOGGER,
-            name=f"Ollama Cloud Usage ({entry.title})",
+            name=f"AX Ollama Usage Tracker ({entry.title})",
             config_entry=entry,
             update_interval=timedelta(seconds=scan_interval),
         )

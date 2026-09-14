@@ -1,5 +1,5 @@
 {
-  "name": "Ollama Cloud Usage",
+  "name": "AX Ollama Usage Tracker",
   "render_readme": true,
   "homeassistant": "2026.1.0"
 }
