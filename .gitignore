@@ -1,0 +1,16 @@
+# artifacts
+.venv/
+__pycache__/
+*.pyc
+.pytest*
+*.egg-info
+*/build/*
+*/dist/*
+
+
+# misc
+.coverage
+.vscode
+*.code-workspace
+coverage.xml
+.DS_Store
