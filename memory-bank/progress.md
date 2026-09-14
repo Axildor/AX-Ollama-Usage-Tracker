@@ -25,6 +25,18 @@
 - [x] Initial git commit on `main`
 - [x] Verify: `git log`, file listing, repo visible in DevContainer workspace
 
+## README Content Rewrite — User-Focused Functionality (2026-09-14)
+- [x] Read `sensor.py`, `config_flow.py`, `const.py`, `coordinator.py` to extract actual functionality
+- [x] Add "Sensors" section: per-window Usage/Remaining/Resets At table + diagnostics table (Activity Cost, Clock Skew, Anchor Divergence)
+- [x] Note dynamic window pickup (new Ollama windows become sensors automatically)
+- [x] Add Manual installation path alongside HACS
+- [x] Condense reset-model section to user-relevant "Reset times" (drop data-time evidence)
+- [x] Add options-flow note (scan interval changeable via Configure) and mark verify step skippable
+- [x] Merge Disclaimer + undocumented-endpoint caveat into one section
+- [x] Keep badges, automation example, multi-account, reauth, ☕ footer, License
+- [x] Memory bank updated (activeContext, progress)
+- [x] Verify: docs-only change — sensor names/attributes cross-checked against `sensor.py` and `const.py`; no build verification applicable
+
 ## README Restyle — AX BPM Badge/Footer Parity (2026-09-14)
 - [x] Read AX BPM README badge block and footer structure as the reference
 - [x] Replace README header badges with AX BPM set: GitHub Release, HACS Custom, Validate workflow (flat-square), Ko-fi tea

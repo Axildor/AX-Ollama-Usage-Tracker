@@ -6,24 +6,31 @@
 # Ollama Cloud Usage for Home Assistant
 
 A [Home Assistant](https://www.home-assistant.io) custom integration (HACS) that
-exposes your **ollama.com cloud usage limits** as sensors.
+exposes your **ollama.com cloud usage limits** as sensors — so you can see how
+much of your session and weekly quota is left, get notified before you run out,
+and track your spending, all inside Home Assistant.
 
-## What it does
+## Sensors
 
-- Polls the (verified-but-undocumented) `GET https://ollama.com/api/usage`
-  endpoint once per scan interval (default 300 s, minimum 60 s).
-- Shows, per usage window (`session`, `weekly`, `daily`, `monthly`, or any
-  other key Ollama introduces):
-  - **Usage** — % of the window consumed
-  - **Remaining** — % left
-  - **Resets At** — computed UTC reset time (modeled windows only)
-- Per-account diagnostics:
-  - **Activity Cost** — USD spent over the rolling 4-week period
-  - **Clock Skew** — seconds between your HA clock and ollama.com's server
-    time (a warning is logged beyond ±120 s, because the reset model depends
-    on your local clock being correct)
-  - **Anchor Divergence** — diagnostic flag raised when an observed usage
-    reset deviates from the model by more than 30 minutes
+For every usage window your account reports (`session`, `weekly`, `daily`,
+`monthly`, …) the integration creates three sensors:
+
+| Sensor | Description |
+|--------|-------------|
+| `<window> Usage` | % of the window consumed (attributes: models used, predicted reset time) |
+| `<window> Remaining` | % left in the window |
+| `<window> Resets At` | When the window resets (UTC timestamp) |
+
+Plus one device-level diagnostic set per account:
+
+| Sensor | Description |
+|--------|-------------|
+| Activity Cost | USD spent over the rolling 4-week period |
+| Clock Skew | Seconds between your Home Assistant clock and ollama.com's server time |
+| Anchor Divergence | Turns on if observed resets deviate from the predicted reset model |
+
+Windows are picked up **dynamically** — if Ollama adds a new usage window, its
+sensors appear automatically on the next poll.
 
 ## Getting an API key
 
@@ -32,8 +39,9 @@ Create an API key at **ollama.com → Settings → API keys**.
 > ⚠️ This integration authenticates with your **API key** — NOT the browser
 > session cookie, and NOT device keys.
 
-## Installation (HACS)
+## Installation
 
+**HACS (recommended)**
 1. Add this repository as a **custom repository** in HACS (category:
    `integration`).
 2. Install **Ollama Cloud Usage**.
@@ -41,47 +49,40 @@ Create an API key at **ollama.com → Settings → API keys**.
 4. Add the integration via **Settings → Devices & Services → Add
    Integration → Ollama Cloud Usage**.
 
+**Manual**
+1. Copy `custom_components/ollama_cloud_usage` into your
+   `config/custom_components` directory.
+2. Restart Home Assistant.
+
 ## Configuration
 
 | Field | Description |
 |-------|-------------|
 | Name | Display name (default "Ollama Cloud") |
 | API key | Your ollama.com API key (validated live during setup) |
-| Scan interval | Poll interval in seconds (default 300, min 60) |
+| Scan interval | Poll interval in seconds (default 300, minimum 60) |
 
-An optional second step shows the computed next session/weekly resets and
-lets you paste `data-time` values from the ollama.com settings page to
-sanity-check the reset model. Mismatches are logged and flagged — setup
-still completes.
+The scan interval can be changed later via the integration's **Configure**
+(options) menu. During setup an optional second step shows the computed next
+session and weekly reset times so you can sanity-check them against the
+ollama.com settings page — you can skip it.
 
-## The reset model (reverse-engineered)
+## Reset times
 
-The API returns **no reset timestamps**, so reset times are computed
-client-side. The model is deterministic but reverse-engineered — treat it as
-a model, not a contract:
+The ollama.com API does not return reset timestamps, so the integration
+computes them:
 
-- **Weekly** resets **Monday 00:00:00 UTC** (evidence: settings-page
-  `data-time="2026-09-21T00:00:00Z"` with the current window opened Monday
-  2026-09-14T00:00:00Z).
-- **Session** resets in **fixed 5-hour buckets on the UTC lattice anchored
-  at 00:00 UTC** (evidence: settings-page `data-time` values
-  `2026-09-14T05:00:00Z` and `2026-09-14T15:00:00Z`, both ≡ 0 mod 5 h).
-- **Any other window** (`daily`, `monthly`, unknown): reset anchor unknown —
-  the *Resets At* sensor reports `unknown` rather than fabricating a value.
+- **Weekly** windows reset **Monday 00:00 UTC**.
+- **Session** windows reset in **fixed 5-hour buckets** (00:00, 05:00, 10:00,
+  15:00, 20:00 UTC).
+- **Other windows** (`daily`, `monthly`, unknown): the reset anchor is
+  unknown, so *Resets At* reports `unknown` instead of guessing.
 
-A built-in **divergence watchdog** tracks usage drops and compares observed
-resets against the model; a deviation beyond 30 minutes raises the
-*Anchor Divergence* diagnostic and logs a warning. The model is never
-self-modified.
+A built-in watchdog compares observed usage resets against these predictions;
+if they disagree by more than 30 minutes, the *Anchor Divergence* sensor turns
+on and a warning is logged.
 
-## Undocumented endpoint caveat
-
-The integration reads `https://ollama.com/api/usage`, an **undocumented**
-endpoint that **may change or break without notice**. It performs a single
-read-only `GET` per poll with your API key — nothing else is ever sent to
-ollama.com.
-
-## Example automation — notify when any window ≥ 80%
+## Example automation — notify when usage ≥ 80%
 
 ```yaml
 automation:
@@ -111,8 +112,10 @@ reauth flow: you are prompted for a new API key only, and the entry reloads.
 
 ## Disclaimer
 
-This integration is not affiliated with or endorsed by Ollama. The endpoint
-it reads is undocumented and could change at any time.
+This integration is not affiliated with or endorsed by Ollama. It reads an
+**undocumented** endpoint (`https://ollama.com/api/usage`) that may change or
+break without notice. It performs a single read-only `GET` per poll with your
+API key — nothing else is ever sent to ollama.com.
 
 ---
 

@@ -1,22 +1,26 @@
 # Active Context — AX Ollama Usage Tracker
 
 ## Current Status
-**README restyled to match AX BPM branding (2026-09-14).** Badge block replaced with the AX BPM badge set (GitHub Release, HACS Custom, Validate workflow, Ko-fi — all `flat-square`) and the AX BPM footer structure (☕ Support the Project + License sections) appended. Docs-only change; no code touched, so no build/pytest verification applies.
+**README rewritten with user-focused integration functionality (2026-09-14).** Following the AX BPM badge/footer restyle, the README body was rewritten to document actual integration functionality from the source code: sensor tables (per-window Usage/Remaining/Resets At + diagnostics), configuration, reset model, automation example, multi-account, reauth. Docs-only change; no code touched, so no build/pytest verification applies.
 
 ## What Was Changed
-- `README.md`:
-  - Replaced the old header (maintenance badge + plain Validate badge) with the AX BPM badge row: GitHub Release, HACS Custom, Validate workflow (flat-square, branch=main, label=Validate), Buy me a tea (Ko-fi).
-  - Retitled the H1 to "Ollama Cloud Usage for Home Assistant" (matching AX BPM's "… for Home Assistant" naming).
-  - Appended the AX BPM footer after the Disclaimer section: horizontal rule, "☕ Support the Project" section (solo-developer-on-disability blurb + for-the-badge Ko-fi banner), horizontal rule, "License" section (MIT).
+- `README.md` (full body rewrite, badges + footer preserved):
+  - New "Sensors" section with two tables: per-window sensors (`<window> Usage` with models/predicted-reset attributes, `<window> Remaining`, `<window> Resets At`) and diagnostics (Activity Cost USD/4-week, Clock Skew seconds, Anchor Divergence flag). Noted dynamic window pickup.
+  - Installation now has HACS + Manual paths (Manual was missing).
+  - Configuration table kept; added note that scan interval is changeable via the Configure (options) menu and that the verify step is optional/skippable.
+  - "The reset model (reverse-engineered)" section condensed to user-relevant "Reset times" (Monday 00:00 UTC weekly, 5-hour session buckets, unknown → `unknown`), removed the `data-time` evidence/provenance detail.
+  - Kept: API key instructions + warning, ≥80% automation example, Multi-account, Re-authentication.
+  - Disclaimer merged with the undocumented-endpoint caveat into one section (single read-only GET per poll).
+  - AX BPM badge block and ☕ Support/License footer unchanged.
 
 ## Files Modified
-- `README.md` (badges + footer restyle)
+- `README.md` (body rewrite)
 - `memory-bank/activeContext.md`, `memory-bank/progress.md` (this update)
 
 ## Key Design Decisions
-- **Badge parity with AX BPM, adapted to this repo** — the Add-on Build badge was replaced by the Validate workflow badge (this repo has no add-on; `validate.yml` is its only workflow). Repo name in badge URLs is `Axildor/AX-Ollama-Usage-Tracker`.
-- **Footer copied verbatim from AX BPM** — same ☕ section text, same for-the-badge Ko-fi banner, same MIT License section, preserving cross-repo brand consistency.
-- **Disclaimer kept** — the Ollama non-affiliation/undocumented-endpoint disclaimer is retained above the footer, as it is specific to this integration.
+- **User-relevant content only** — internal implementation details (watchdog thresholds as constants, `data-time` reverse-engineering evidence, backoff internals, unique_id scheme) were dropped or condensed; what remains is what a user needs: what sensors exist, how to install/configure, what reset times mean, and the automation example.
+- **Sensor names verified against `sensor.py`** — entity layout (per-window triple + 3 diagnostics), attributes (`models`, `predicted_reset_utc`), and the `unknown` Resets At behavior for unmodeled windows all match the code.
+- **Disclaimer + caveat merged** — both said "undocumented endpoint, may break"; one section avoids duplication.
 
 ## Previous Context
 ### Ollama Cloud Usage v0.1.0 (2026-09-14)
