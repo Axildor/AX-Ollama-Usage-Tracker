@@ -103,7 +103,9 @@ async def async_setup_entry(
                 if pair not in known_model_pairs:
                     new_pairs.add(pair)
         for window, model in sorted(new_pairs):
-            entities.append(OllamaModelRequestsSensor(coordinator, entry, window, model))
+            entities.append(
+                OllamaModelRequestsSensor(coordinator, entry, window, model)
+            )
         known_model_pairs.update(new_pairs)
 
         if entities:

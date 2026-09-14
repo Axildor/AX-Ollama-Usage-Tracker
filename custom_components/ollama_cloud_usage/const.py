@@ -70,6 +70,7 @@ def window_label(window: str) -> str:
     """Human-readable label for a window key."""
     return WINDOW_LABELS.get(window) or window.replace("_", " ").title()
 
+
 # Usage sensor attribute keys
 ATTR_MODELS: Final = "models"
 ATTR_PREDICTED_RESET: Final = "predicted_reset_utc"
