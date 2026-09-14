@@ -24,3 +24,12 @@
 - [x] Create `memory-bank/` structure — `activeContext.md`, `progress.md`, `projectstructure.md`, `old/` archive with `.gitkeep`
 - [x] Initial git commit on `main`
 - [x] Verify: `git log`, file listing, repo visible in DevContainer workspace
+
+## README Restyle — AX BPM Badge/Footer Parity (2026-09-14)
+- [x] Read AX BPM README badge block and footer structure as the reference
+- [x] Replace README header badges with AX BPM set: GitHub Release, HACS Custom, Validate workflow (flat-square), Ko-fi tea
+- [x] Retitle H1 to "Ollama Cloud Usage for Home Assistant"
+- [x] Append AX BPM footer: ☕ Support the Project section (Ko-fi for-the-badge banner) + License (MIT)
+- [x] Keep the Ollama-specific Disclaimer section above the footer
+- [x] Memory bank updated (activeContext, progress)
+- [x] Verify: docs-only change — README structure reviewed against AX BPM reference; no code/build verification applicable

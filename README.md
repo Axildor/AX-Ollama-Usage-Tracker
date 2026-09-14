@@ -1,7 +1,9 @@
-# Ollama Cloud Usage
+[![GitHub Release](https://img.shields.io/github/v/release/Axildor/AX-Ollama-Usage-Tracker?style=flat-square)](https://github.com/Axildor/AX-Ollama-Usage-Tracker/releases)
+[![HACS Status](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://github.com/hacs/integration)
+[![Validate](https://img.shields.io/github/actions/workflow/status/Axildor/AX-Ollama-Usage-Tracker/validate.yml?branch=main&label=Validate&style=flat-square)](https://github.com/Axildor/AX-Ollama-Usage-Tracker/actions/workflows/validate.yml)
+[![Buy me a tea](https://img.shields.io/badge/Buy_me_a_tea-☕-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/axildor)
 
-![Project Maintenance](https://img.shields.io/maintenance/yes/2026.svg)
-[![Validate](https://github.com/Axildor/AX-Ollama-Usage-Tracker/actions/workflows/validate.yml/badge.svg)](https://github.com/Axildor/AX-Ollama-Usage-Tracker/actions/workflows/validate.yml)
+# Ollama Cloud Usage for Home Assistant
 
 A [Home Assistant](https://www.home-assistant.io) custom integration (HACS) that
 exposes your **ollama.com cloud usage limits** as sensors.
@@ -111,3 +113,22 @@ reauth flow: you are prompted for a new API key only, and the entry reloads.
 
 This integration is not affiliated with or endorsed by Ollama. The endpoint
 it reads is undocumented and could change at any time.
+
+---
+
+## ☕ Support the Project
+
+I'm a solo developer on disability building Home Assistant integrations
+and add-ons independently. Your support keeps servers online, API quotas
+funded, and the black tea brewing while I debug Python.
+
+If this integration is useful to you, there's no obligation — but any
+support is highly appreciated.
+
+[![Buy me a tea](https://img.shields.io/badge/Buy_me_a_tea-on_Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/axildor)
+
+---
+
+## License
+
+MIT
