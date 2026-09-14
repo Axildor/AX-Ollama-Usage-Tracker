@@ -8,14 +8,25 @@ Per window W (created dynamically for every key in ``coordinator.data.windows``)
 - ``<W> Remaining`` — %, MEASUREMENT, icon ``mdi:gauge-empty``
 - ``<W> Resets At`` — ``device_class: timestamp``; ``unknown`` for
   unmodeled windows (``daily``, ``monthly``, unknown keys)
+- ``<W> <model> Requests`` — per-model request count for the window,
+  ``state_class: total_increasing``; created dynamically for every
+  ``(window, model)`` pair seen in the payload
 
 Per entry (diagnostics):
 - ``Activity Cost`` — USD over the rolling 4-week period
 - ``Clock Skew`` — seconds between HA UTC now and the server time
+  (``EntityCategory.DIAGNOSTIC``)
 - ``Anchor Divergence`` — on/off boolean, diagnostic
+  (``EntityCategory.DIAGNOSTIC``)
 
-Window keys that disappear from the API payload leave their registry
-entries in place; those entities report ``unavailable``.
+Window keys (and per-window model keys) that disappear from the API
+payload leave their registry entries in place; those entities report
+``unavailable``.
+
+Naming: every entity carries a human-readable name. Window sensors use
+a friendly label from :func:`.const.window_label` (``session`` →
+"Session", unknown keys title-cased); static diagnostics sensors use
+``translation_key`` resolved through ``strings.json``.
 """
 
 from __future__ import annotations
@@ -26,10 +37,12 @@ from typing import TYPE_CHECKING, Any
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -43,9 +56,11 @@ from .const import (
     SUFFIX_COST,
     SUFFIX_DIVERGENCE,
     SUFFIX_REMAINING,
+    SUFFIX_REQUESTS,
     SUFFIX_RESETS_AT,
     SUFFIX_SKEW,
     SUFFIX_USAGE,
+    window_label,
 )
 from .coordinator import OllamaUsageUpdateCoordinator
 
@@ -61,6 +76,7 @@ async def async_setup_entry(
     """Set up sensors for a config entry, including dynamic windows."""
     coordinator: OllamaUsageUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
     known_windows: set[str] = set()
+    known_model_pairs: set[tuple[str, str]] = set()
 
     def _add_new_entities() -> None:
         """Create entities for window keys not yet seen."""
@@ -68,8 +84,6 @@ async def async_setup_entry(
         if data is None:
             return
         new_windows = set(data.windows) - known_windows
-        if not new_windows:
-            return
         entities: list[SensorEntity] = []
         for window in sorted(new_windows):
             entities.extend(
@@ -80,7 +94,20 @@ async def async_setup_entry(
                 ]
             )
         known_windows.update(new_windows)
-        async_add_entities(entities)
+
+        # Per-model request-count sensors: one per (window, model) pair.
+        new_pairs: set[tuple[str, str]] = set()
+        for window, wdata in data.windows.items():
+            for model in wdata.models:
+                pair = (window, model)
+                if pair not in known_model_pairs:
+                    new_pairs.add(pair)
+        for window, model in sorted(new_pairs):
+            entities.append(OllamaModelRequestsSensor(coordinator, entry, window, model))
+        known_model_pairs.update(new_pairs)
+
+        if entities:
+            async_add_entities(entities)
 
     _add_new_entities()
 
@@ -93,7 +120,8 @@ async def async_setup_entry(
         ]
     )
 
-    # Listen for coordinator updates to add entities for new window keys.
+    # Listen for coordinator updates to add entities for new window keys
+    # and newly seen (window, model) pairs.
     coordinator.async_add_listener(_add_new_entities)
 
 
@@ -149,6 +177,11 @@ class _WindowSensorBase(_OllamaUsageBaseEntity):
 class OllamaUsageSensor(_WindowSensorBase, SensorEntity):
     """``<W> Usage`` — used fraction as a percentage."""
 
+    _attr_icon = "mdi:gauge"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_suggested_display_precision = 1
+    _attr_native_unit_of_measurement = "%"
+
     def __init__(
         self,
         coordinator: OllamaUsageUpdateCoordinator,
@@ -157,11 +190,7 @@ class OllamaUsageSensor(_WindowSensorBase, SensorEntity):
     ) -> None:
         """Initialize the usage sensor."""
         _WindowSensorBase.__init__(self, coordinator, entry, window, SUFFIX_USAGE)
-
-    _attr_icon = "mdi:gauge"
-    _attr_state_class = "measurement"
-    _attr_suggested_display_precision = 1
-    _attr_native_unit_of_measurement = "%"
+        self._attr_name = f"{window_label(window)} Usage"
 
     @property
     def native_value(self) -> float | None:
@@ -191,6 +220,11 @@ class OllamaUsageSensor(_WindowSensorBase, SensorEntity):
 class OllamaRemainingSensor(_WindowSensorBase, SensorEntity):
     """``<W> Remaining`` — 100% minus usage."""
 
+    _attr_icon = "mdi:gauge-empty"
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_suggested_display_precision = 1
+    _attr_native_unit_of_measurement = "%"
+
     def __init__(
         self,
         coordinator: OllamaUsageUpdateCoordinator,
@@ -199,11 +233,7 @@ class OllamaRemainingSensor(_WindowSensorBase, SensorEntity):
     ) -> None:
         """Initialize the remaining sensor."""
         _WindowSensorBase.__init__(self, coordinator, entry, window, SUFFIX_REMAINING)
-
-    _attr_icon = "mdi:gauge-empty"
-    _attr_state_class = "measurement"
-    _attr_suggested_display_precision = 1
-    _attr_native_unit_of_measurement = "%"
+        self._attr_name = f"{window_label(window)} Remaining"
 
     @property
     def native_value(self) -> float | None:
@@ -217,6 +247,8 @@ class OllamaRemainingSensor(_WindowSensorBase, SensorEntity):
 class OllamaResetsAtSensor(_WindowSensorBase, SensorEntity):
     """``<W> Resets At`` — computed UTC reset time (timestamp device class)."""
 
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
     def __init__(
         self,
         coordinator: OllamaUsageUpdateCoordinator,
@@ -225,8 +257,7 @@ class OllamaResetsAtSensor(_WindowSensorBase, SensorEntity):
     ) -> None:
         """Initialize the resets-at sensor."""
         _WindowSensorBase.__init__(self, coordinator, entry, window, SUFFIX_RESETS_AT)
-
-    _attr_device_class = SensorDeviceClass.TIMESTAMP
+        self._attr_name = f"{window_label(window)} Resets At"
 
     @property
     def native_value(self) -> datetime | None:
@@ -234,13 +265,43 @@ class OllamaResetsAtSensor(_WindowSensorBase, SensorEntity):
         return self.coordinator.predicted_reset(self._window)
 
 
+class OllamaModelRequestsSensor(_WindowSensorBase, SensorEntity):
+    """``<W> <model> Requests`` — request count for one model in a window."""
+
+    _attr_icon = "mdi:counter"
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+
+    def __init__(
+        self,
+        coordinator: OllamaUsageUpdateCoordinator,
+        entry: ConfigEntry,
+        window: str,
+        model: str,
+    ) -> None:
+        """Initialize the per-model request-count sensor."""
+        _WindowSensorBase.__init__(
+            self, coordinator, entry, window, f"{model}_{SUFFIX_REQUESTS}"
+        )
+        self._model = model
+        self._attr_name = f"{window_label(window)} {model} Requests"
+
+    @property
+    def native_value(self) -> int | None:
+        """Request count for this model in this window."""
+        wdata = self._window_data()
+        if wdata is None:
+            return None
+        return wdata.models.get(self._model)
+
+
 class OllamaActivityCostSensor(_OllamaUsageBaseEntity, SensorEntity):
     """``Activity Cost`` — USD over the rolling 4-week period."""
 
     _attr_icon = "mdi:cash"
-    _attr_state_class = "total"
+    _attr_state_class = SensorStateClass.TOTAL
     _attr_native_unit_of_measurement = "USD"
     _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_translation_key = "activity_cost"
 
     def __init__(
         self,
@@ -263,8 +324,10 @@ class OllamaClockSkewSensor(_OllamaUsageBaseEntity, SensorEntity):
     """``Clock Skew`` — seconds between HA UTC now and the server time."""
 
     _attr_icon = "mdi:clock-outline"
-    _attr_state_class = "measurement"
+    _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = "s"
+    _attr_translation_key = "clock_skew"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(
         self,
@@ -284,6 +347,8 @@ class OllamaAnchorDivergenceSensor(_OllamaUsageBaseEntity, SensorEntity):
     """``Anchor Divergence`` — on/off boolean, diagnostic."""
 
     _attr_icon = "mdi:alert-octagon"
+    _attr_translation_key = "anchor_divergence"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(
         self,

@@ -42,5 +42,18 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "activity_cost": {
+        "name": "Activity Cost"
+      },
+      "clock_skew": {
+        "name": "Clock Skew"
+      },
+      "anchor_divergence": {
+        "name": "Anchor Divergence"
+      }
+    }
   }
 }

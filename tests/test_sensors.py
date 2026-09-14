@@ -13,6 +13,7 @@ from custom_components.ollama_cloud_usage.sensor import (
     OllamaActivityCostSensor,
     OllamaAnchorDivergenceSensor,
     OllamaClockSkewSensor,
+    OllamaModelRequestsSensor,
     OllamaRemainingSensor,
     OllamaResetsAtSensor,
     OllamaUsageSensor,
@@ -48,6 +49,15 @@ async def test_usage_sensor_value_and_attributes(hass) -> None:
     assert attrs["predicted_reset_utc"] is not None
     assert sensor.unique_id == "test_entry_session_usage"
     assert sensor.has_entity_name is True
+    assert sensor.name == "Session Usage"
+
+
+async def test_usage_sensor_unknown_window_label(hass) -> None:
+    """Unknown window keys get a title-cased, underscore-free label."""
+    coordinator = make_coordinator(hass)
+    _seed(coordinator, {"last_4_weeks": _window(0.1)})
+    sensor = OllamaUsageSensor(coordinator, coordinator._entry, "last_4_weeks")
+    assert sensor.name == "Last 4 Weeks Usage"
 
 
 async def test_remaining_sensor(hass) -> None:
@@ -57,6 +67,7 @@ async def test_remaining_sensor(hass) -> None:
     sensor = OllamaRemainingSensor(coordinator, coordinator._entry, "session")
     assert sensor.native_value == 99.5
     assert sensor.unique_id == "test_entry_session_remaining"
+    assert sensor.name == "Session Remaining"
 
 
 async def test_resets_at_sensor_session(hass) -> None:
@@ -69,6 +80,7 @@ async def test_resets_at_sensor_session(hass) -> None:
     assert value.tzinfo is UTC
     assert int(value.timestamp()) % 18000 == 0
     assert sensor.unique_id == "test_entry_session_resets_at"
+    assert sensor.name == "Session Resets At"
 
 
 async def test_resets_at_sensor_unmodeled_is_unknown(hass) -> None:
@@ -88,6 +100,25 @@ async def test_vanished_window_reports_unavailable(hass) -> None:
     assert sensor.native_value is None
 
 
+async def test_model_requests_sensor(hass) -> None:
+    """Per-model request sensor reports the count and a legible name."""
+    coordinator = make_coordinator(hass)
+    _seed(
+        coordinator,
+        {"session": _window(0.235, {"glm-5.3-flash": 231, "glm-5.3": 75})},
+    )
+    entry = coordinator._entry
+    sensor = OllamaModelRequestsSensor(coordinator, entry, "session", "glm-5.3-flash")
+    assert sensor.native_value == 231
+    assert sensor.unique_id == "test_entry_session_glm-5.3-flash_requests"
+    assert sensor.name == "Session glm-5.3-flash Requests"
+    assert sensor.state_class == "total_increasing"
+
+    # Model missing from the window → None (unavailable)
+    other = OllamaModelRequestsSensor(coordinator, entry, "weekly", "glm-5.3")
+    assert other.native_value is None
+
+
 async def test_diagnostics_sensors(hass) -> None:
     """Activity Cost, Clock Skew, and Anchor Divergence sensors."""
     coordinator = make_coordinator(hass)
@@ -97,14 +128,22 @@ async def test_diagnostics_sensors(hass) -> None:
     cost = OllamaActivityCostSensor(coordinator, entry)
     assert cost.native_value == 0.0
     assert cost.unique_id == "test_entry_activity_cost"
+    assert cost.translation_key == "activity_cost"
+    assert cost.entity_category is None
 
     skew = OllamaClockSkewSensor(coordinator, entry)
     assert skew.native_value is not None
     assert skew.unique_id == "test_entry_clock_skew"
+    assert skew.translation_key == "clock_skew"
+    assert skew.entity_category is not None
+    assert skew.entity_category.value == "diagnostic"
 
     div = OllamaAnchorDivergenceSensor(coordinator, entry)
     assert div.native_value is False
     assert div.unique_id == "test_entry_anchor_divergence"
+    assert div.translation_key == "anchor_divergence"
+    assert div.entity_category is not None
+    assert div.entity_category.value == "diagnostic"
 
 
 async def test_device_info_shared(hass) -> None:

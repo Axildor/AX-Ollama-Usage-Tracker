@@ -13,24 +13,32 @@ and track your spending, all inside Home Assistant.
 ## Sensors
 
 For every usage window your account reports (`session`, `weekly`, `daily`,
-`monthly`, …) the integration creates three sensors:
+`monthly`, …) the integration creates these sensors:
 
 | Sensor | Description |
 |--------|-------------|
-| `<window> Usage` | % of the window consumed (attributes: models used, predicted reset time) |
-| `<window> Remaining` | % left in the window |
-| `<window> Resets At` | When the window resets (UTC timestamp) |
+| `<Window> Usage` | % of the window consumed (attributes: models used, predicted reset time) |
+| `<Window> Remaining` | % left in the window |
+| `<Window> Resets At` | When the window resets (UTC timestamp) |
+| `<Window> <model> Requests` | Request count for one model in that window (e.g. *Session glm-5.3-flash Requests*) |
 
 Plus one device-level diagnostic set per account:
 
 | Sensor | Description |
 |--------|-------------|
 | Activity Cost | USD spent over the rolling 4-week period |
-| Clock Skew | Seconds between your Home Assistant clock and ollama.com's server time |
-| Anchor Divergence | Turns on if observed resets deviate from the predicted reset model |
+| Clock Skew | Seconds between your Home Assistant clock and ollama.com's server time *(diagnostic)* |
+| Anchor Divergence | Turns on if observed resets deviate from the predicted reset model *(diagnostic)* |
 
 Windows are picked up **dynamically** — if Ollama adds a new usage window, its
-sensors appear automatically on the next poll.
+sensors appear automatically on the next poll. Per-model request sensors are
+likewise created automatically for every model your account uses in a window;
+if a model stops appearing in the payload, its sensor reports *unavailable*
+but is not removed.
+
+All entities carry human-readable names (e.g. **Ollama Cloud Session Usage**,
+**Ollama Cloud Weekly Remaining**). The two diagnostic sensors are hidden from
+dashboards by default but visible under the device's diagnostics area.
 
 ## Getting an API key
 

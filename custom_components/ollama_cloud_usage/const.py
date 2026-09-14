@@ -50,9 +50,25 @@ WINDOW_WEEKLY: Final = "weekly"
 SUFFIX_USAGE: Final = "usage"
 SUFFIX_REMAINING: Final = "remaining"
 SUFFIX_RESETS_AT: Final = "resets_at"
+SUFFIX_REQUESTS: Final = "requests"
 SUFFIX_COST: Final = "activity_cost"
 SUFFIX_SKEW: Final = "clock_skew"
 SUFFIX_DIVERGENCE: Final = "anchor_divergence"
+
+# Friendly labels for known window keys. Unknown keys are title-cased
+# with underscores converted to spaces (e.g. "last_4_weeks" →
+# "Last 4 Weeks") so every entity gets a legible name.
+WINDOW_LABELS: Final[dict[str, str]] = {
+    WINDOW_SESSION: "Session",
+    WINDOW_WEEKLY: "Weekly",
+    "daily": "Daily",
+    "monthly": "Monthly",
+}
+
+
+def window_label(window: str) -> str:
+    """Human-readable label for a window key."""
+    return WINDOW_LABELS.get(window) or window.replace("_", " ").title()
 
 # Usage sensor attribute keys
 ATTR_MODELS: Final = "models"
