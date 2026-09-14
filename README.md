@@ -10,6 +10,8 @@ exposes your **ollama.com cloud usage limits** as sensors — so you can see how
 much of your session and weekly quota is left, get notified before you run out,
 and track your spending, all inside Home Assistant.
 
+<img width="1002" height="895" alt="image" src="https://github.com/user-attachments/assets/f8589afa-0e08-4481-831d-ed2b6709168a" />
+
 ## Sensors
 
 For every usage window your account reports (`session`, `weekly`, `daily`,
