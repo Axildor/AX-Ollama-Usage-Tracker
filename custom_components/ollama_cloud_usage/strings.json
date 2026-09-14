@@ -12,7 +12,7 @@
       },
       "verify": {
         "title": "Verify reset model (optional)",
-        "description": "Computed next resets (UTC):\n- Session: {session_reset}\n- Weekly: {weekly_reset}\n\nOptionally paste `data-time` attribute values from https://ollama.com/settings (space or comma separated). Values disagreeing with the model by more than 5 minutes set the divergence flag — setup still completes. Leave empty to skip.",
+        "description": "Computed next resets (UTC):\n- Session: {session_reset}\n- Weekly: {weekly_reset}\n\nOptionally paste `data-time` attribute values from {settings_url} (space or comma separated). Values disagreeing with the model by more than 5 minutes set the divergence flag — setup still completes. Leave empty to skip.",
         "data": {
           "verify_data_times": "Pasted data-time values (optional)"
         }

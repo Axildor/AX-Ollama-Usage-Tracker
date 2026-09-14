@@ -22,6 +22,7 @@ MIN_SCAN_INTERVAL: Final = 60
 
 # HTTP client behaviour
 API_BASE_URL: Final = "https://ollama.com"
+SETTINGS_URL: Final = f"{API_BASE_URL}/settings"
 USAGE_ENDPOINT: Final = "/api/usage"
 REQUEST_TIMEOUT: Final = 15
 USER_AGENT: Final = "ha-ollama-cloud-usage/0.1.0"

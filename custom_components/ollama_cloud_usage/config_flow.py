@@ -34,6 +34,7 @@ from .const import (
     DOMAIN,
     LOGGER,
     MIN_SCAN_INTERVAL,
+    SETTINGS_URL,
     VERIFY_TOLERANCE,
 )
 from .reset_math import next_session_reset, next_weekly_reset
@@ -156,6 +157,7 @@ class OllamaCloudUsageConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             description_placeholders={
                 "session_reset": predicted_session.isoformat(),
                 "weekly_reset": predicted_weekly.isoformat(),
+                "settings_url": SETTINGS_URL,
             },
         )
 
