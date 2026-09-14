@@ -1,5 +1,21 @@
 # Progress — AX Ollama Usage Tracker
 
+## Ollama Cloud Usage v0.1.0 — Full Integration (2026-09-14)
+- [x] Scaffold `custom_components/ollama_cloud_usage/`, `tests/`, `.github/workflows/`, root configs
+- [x] `manifest.json` (domain `ollama_cloud_usage`, config_flow, cloud_polling, service, v0.1.0) + `hacs.json` + `const.py`
+- [x] `api.py` — aiohttp client, Bearer auth, 15 s timeout, HA UA, typed exceptions, injectable base_url
+- [x] `reset_math.py` — pure `next_session_reset` (strictly-greater 5 h UTC ceil), `next_weekly_reset` (Monday 00:00 UTC), `next_reset_for_window` (unmodeled → None)
+- [x] `coordinator.py` — dynamic window parsing, string-cost parse, nanosecond server_time, 429/5xx backoff (cap 1 h), 401 → ConfigEntryAuthFailed, network → UpdateFailed, divergence watchdog (drop < 0.5×, > 30 min deviation flag)
+- [x] `config_flow.py` — user step with live key validation, optional verify step (data-time paste, > 5 min mismatch logs + flags), reauth (key only), options flow
+- [x] `sensor.py` — per-window Usage/Remaining/Resets At (dynamic keys, stable unique_ids) + Activity Cost/Clock Skew/Anchor Divergence; single DeviceInfo
+- [x] `strings.json` + `translations/en.json`
+- [x] Tests: 4 payload fixtures (verbatim legacy, daily+weekly, monthly-only, weird_window), real aiohttp test server for api tests, stub client for coordinator tests — 54/54 passing
+- [x] `.github/workflows/validate.yml` (ruff + hassfest + hacs/action + pytest), README rewritten, `.ruff.toml`, `pytest.ini`
+- [x] Verify: `pytest tests/` 54 passed; `ruff check` + `ruff format --check` clean; `py_compile` all modules OK
+- [x] Memory bank updated (activeContext, progress, projectstructure)
+
+**Notes:** aioresponses/respx incompatible with aiohttp 3.14 (HA 2026.x pin) — replaced with a real local aiohttp test server + stub client. hassfest/hacs-action run in CI (GitHub), not locally.
+
 ## Repository Scaffold (2026-09-14)
 - [x] Create repo directory `/workspaces/AX-Ollama-Usage-Tracker` and `git init -b main`
 - [x] Create `README.md` — title, purpose statement, scaffold-phase status badge, placeholder feature list
@@ -8,5 +24,3 @@
 - [x] Create `memory-bank/` structure — `activeContext.md`, `progress.md`, `projectstructure.md`, `old/` archive with `.gitkeep`
 - [x] Initial git commit on `main`
 - [x] Verify: `git log`, file listing, repo visible in DevContainer workspace
-
-**Next steps:** Decide feature scope (likely HACS custom integration exposing Ollama usage sensors: requests, tokens generated, per-model stats, active models).

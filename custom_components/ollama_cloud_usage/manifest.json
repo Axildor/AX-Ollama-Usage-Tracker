@@ -1,0 +1,17 @@
+{
+  "domain": "ollama_cloud_usage",
+  "name": "Ollama Cloud Usage",
+  "codeowners": [
+    "@Axildor"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Axildor/AX-Ollama-Usage-Tracker",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Axildor/AX-Ollama-Usage-Tracker/issues",
+  "loggers": [
+    "ollama_cloud_usage"
+  ],
+  "requirements": [],
+  "version": "0.1.0"
+}

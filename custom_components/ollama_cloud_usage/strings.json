@@ -1,0 +1,46 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ollama Cloud Usage",
+        "description": "Connect to ollama.com cloud usage limits. {api_key_help}",
+        "data": {
+          "name": "Name",
+          "api_key": "API key",
+          "scan_interval": "Scan interval (seconds)"
+        }
+      },
+      "verify": {
+        "title": "Verify reset model (optional)",
+        "description": "Computed next resets (UTC):\n- Session: {session_reset}\n- Weekly: {weekly_reset}\n\nOptionally paste `data-time` attribute values from https://ollama.com/settings (space or comma separated). Values disagreeing with the model by more than 5 minutes set the divergence flag — setup still completes. Leave empty to skip.",
+        "data": {
+          "verify_data_times": "Pasted data-time values (optional)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate Ollama Cloud Usage",
+        "description": "Your Ollama Cloud API key was rejected. Enter a new key (create at ollama.com → Settings → API keys).",
+        "data": {
+          "api_key": "API key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid credentials — the API key was rejected by ollama.com.",
+      "cannot_connect": "Cannot connect to ollama.com. Check your network and try again."
+    },
+    "abort": {
+      "reauth_successful": "Re-authentication was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Ollama Cloud Usage options",
+        "data": {
+          "scan_interval": "Scan interval (seconds)"
+        }
+      }
+    }
+  }
+}

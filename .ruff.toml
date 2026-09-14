@@ -1,0 +1,28 @@
+# Ruff configuration for AX-Ollama-Usage-Tracker
+# Mirrors Home Assistant core style (line length 88, isort-compatible).
+
+target-version = "py313"
+line-length = 88
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "RUF", # ruff-specific
+]
+ignore = [
+    "E501", # line length handled by formatter
+]
+
+[lint.isort]
+force-sort-within-sections = true
+combine-as-imports = true
+
+[format]
+quote-style = "double"
+indent-style = "space"
