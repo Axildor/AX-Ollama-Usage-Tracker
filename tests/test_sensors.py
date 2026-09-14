@@ -152,6 +152,6 @@ async def test_device_info_shared(hass) -> None:
     _seed(coordinator, {"weekly": _window(0.1)})
     sensor = OllamaUsageSensor(coordinator, coordinator._entry, "weekly")
     info = sensor.device_info
-    assert info["manufacturer"] == "Ollama"
-    assert info["model"] == "Ollama Cloud"
+    assert info["manufacturer"] == "Axildor"
+    assert info["model"] == "AX Ollama Usage Tracker"
     assert ("ollama_cloud_usage", "test_entry") in info["identifiers"]

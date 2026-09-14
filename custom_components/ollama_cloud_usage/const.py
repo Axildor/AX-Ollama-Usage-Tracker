@@ -8,8 +8,8 @@ from typing import Final
 DOMAIN: Final = "ollama_cloud_usage"
 LOGGER: Final = logging.getLogger(__package__)
 
-MANUFACTURER: Final = "Ollama"
-MODEL: Final = "Ollama Cloud"
+MANUFACTURER: Final = "Axildor"
+MODEL: Final = "AX Ollama Usage Tracker"
 
 CONF_API_KEY: Final = "api_key"
 CONF_SCAN_INTERVAL: Final = "scan_interval"
