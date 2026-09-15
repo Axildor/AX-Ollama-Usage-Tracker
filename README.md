@@ -3,7 +3,8 @@
 [![Validate](https://img.shields.io/github/actions/workflow/status/Axildor/AX-Ollama-Usage-Tracker/validate.yml?branch=main&label=Validate&style=flat-square)](https://github.com/Axildor/AX-Ollama-Usage-Tracker/actions/workflows/validate.yml)
 [![Buy me a tea](https://img.shields.io/badge/Buy_me_a_tea-☕-FF5E5B?style=flat-square&logo=ko-fi&logoColor=white)](https://ko-fi.com/axildor)
 
-# AX Ollama Usage Tracker for Home Assistant
+
+#  AX Ollama Usage Tracker for Home Assistant <img width="75" height="75" alt="AX Ollama usage tracker" src="https://github.com/user-attachments/assets/c7c9748c-a7ea-41b0-9a3d-d1f5bd62e824" />
 
 A [Home Assistant](https://www.home-assistant.io) custom integration (HACS) that
 exposes your **ollama.com cloud usage limits** as sensors — so you can see how
