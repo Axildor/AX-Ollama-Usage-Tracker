@@ -11,12 +11,12 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
 import pytest
 
-from custom_components.ollama_cloud_usage.api import (
+from custom_components.ax_ollama_usage.api import (
     OllamaApiError,
     OllamaAuthError,
     OllamaRateLimitError,
 )
-from custom_components.ollama_cloud_usage.coordinator import (
+from custom_components.ax_ollama_usage.coordinator import (
     OllamaUsageCoordinatorData,
     _parse_iso_utc,
     _parse_models,

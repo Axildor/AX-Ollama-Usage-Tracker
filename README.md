@@ -60,9 +60,27 @@ Create an API key at **ollama.com → Settings → API keys**.
    Integration → AX Ollama Usage Tracker**.
 
 **Manual**
-1. Copy `custom_components/ollama_cloud_usage` into your
+1. Copy `custom_components/ax_ollama_usage` into your
    `config/custom_components` directory.
 2. Restart Home Assistant.
+
+## Upgrading from v0.1.x
+
+Version 0.2.0 renamed the integration domain from `ollama_cloud_usage` to
+`ax_ollama_usage` to avoid a conflict with another integration. This is a
+**breaking change**: existing config entries created under the old domain
+will no longer load.
+
+1. Note your API key (or just have it ready).
+2. Remove the old **AX Ollama Usage Tracker** entry via
+   **Settings → Devices & Services**.
+3. Delete the old `custom_components/ollama_cloud_usage` folder if you
+   installed manually.
+4. Re-add the integration (see Installation above).
+
+Entity IDs regenerate under the new `sensor.ax_ollama_usage_*` prefix, so
+automations or dashboards referencing the old `sensor.ollama_cloud_usage_*`
+entity IDs must be updated.
 
 ## Configuration
 

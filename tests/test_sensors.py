@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from custom_components.ollama_cloud_usage.coordinator import (
+from custom_components.ax_ollama_usage.coordinator import (
     OllamaUsageCoordinatorData,
     OllamaUsageUpdateCoordinator,
     WindowData,
 )
-from custom_components.ollama_cloud_usage.sensor import (
+from custom_components.ax_ollama_usage.sensor import (
     OllamaActivityCostSensor,
     OllamaAnchorDivergenceSensor,
     OllamaClockSkewSensor,
@@ -154,4 +154,4 @@ async def test_device_info_shared(hass) -> None:
     info = sensor.device_info
     assert info["manufacturer"] == "Axildor"
     assert info["model"] == "AX Ollama Usage Tracker"
-    assert ("ollama_cloud_usage", "test_entry") in info["identifiers"]
+    assert ("ax_ollama_usage", "test_entry") in info["identifiers"]

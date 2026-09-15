@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Final
 
-DOMAIN: Final = "ollama_cloud_usage"
+DOMAIN: Final = "ax_ollama_usage"
 LOGGER: Final = logging.getLogger(__package__)
 
 MANUFACTURER: Final = "Axildor"

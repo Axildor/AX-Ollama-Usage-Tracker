@@ -11,7 +11,7 @@ from __future__ import annotations
 import aiohttp
 import pytest
 
-from custom_components.ollama_cloud_usage.api import (
+from custom_components.ax_ollama_usage.api import (
     OllamaApiError,
     OllamaAuthError,
     OllamaClient,

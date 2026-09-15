@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from custom_components.ollama_cloud_usage.reset_math import (
+from custom_components.ax_ollama_usage.reset_math import (
     next_reset_for_window,
     next_session_reset,
     next_weekly_reset,

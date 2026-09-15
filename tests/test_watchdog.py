@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from custom_components.ollama_cloud_usage.coordinator import (
+from custom_components.ax_ollama_usage.coordinator import (
     OllamaUsageCoordinatorData,
     OllamaUsageUpdateCoordinator,
     WindowData,

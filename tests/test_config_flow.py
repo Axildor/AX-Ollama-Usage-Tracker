@@ -14,8 +14,8 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResultType
 import pytest
 
-from custom_components.ollama_cloud_usage.api import OllamaApiError, OllamaAuthError
-from custom_components.ollama_cloud_usage.const import (
+from custom_components.ax_ollama_usage.api import OllamaApiError, OllamaAuthError
+from custom_components.ax_ollama_usage.const import (
     CONF_API_KEY,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
@@ -31,7 +31,7 @@ USER_INPUT: dict[str, Any] = {
 }
 
 _PATCH_TARGET = (
-    "custom_components.ollama_cloud_usage.config_flow.OllamaClient.async_get_usage"
+    "custom_components.ax_ollama_usage.config_flow.OllamaClient.async_get_usage"
 )
 
 

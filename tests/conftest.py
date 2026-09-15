@@ -219,7 +219,7 @@ def make_fake_entry() -> Mock:
 
 def make_coordinator(hass, client: StubUsageClient | None = None):
     """Build a coordinator with a stubbed API client."""
-    from custom_components.ollama_cloud_usage.coordinator import (
+    from custom_components.ax_ollama_usage.coordinator import (
         OllamaUsageUpdateCoordinator,
     )
 
