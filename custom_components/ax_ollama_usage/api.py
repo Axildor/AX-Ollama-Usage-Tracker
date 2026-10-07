@@ -48,8 +48,9 @@ class OllamaClient:
     """Thin async client for ``GET /api/usage``.
 
     A single :class:`aiohttp.ClientSession` is reused across polls.  The
-    session is owned by the caller (the coordinator) and must be closed
-    via :meth:`close` when the integration unloads.
+    session is owned by Home Assistant (``async_get_clientsession``) and
+    is NOT closed by this client — closing a shared session would break
+    every other consumer of it.
     """
 
     def __init__(
@@ -104,6 +105,3 @@ class OllamaClient:
             raise OllamaApiError(f"unexpected payload type from {url}")
         return data
 
-    async def close(self) -> None:
-        """Close the underlying aiohttp session."""
-        await self._session.close()

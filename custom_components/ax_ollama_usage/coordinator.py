@@ -323,5 +323,11 @@ class OllamaUsageUpdateCoordinator(DataUpdateCoordinator[OllamaUsageCoordinatorD
         return (dt_util.utcnow() - self.data.server_time).total_seconds()
 
     async def async_shutdown(self) -> None:
-        """Close the API client on unload."""
-        await self._client.close()
+        """Release coordinator resources on unload.
+
+        The aiohttp session is owned by Home Assistant
+        (``async_get_clientsession``) and must NOT be closed here —
+        closing it would break every other consumer of the shared
+        session.  Nothing to release; kept as an explicit no-op hook.
+        """
+        return None
