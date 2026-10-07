@@ -18,7 +18,43 @@ def _utc(iso: str) -> datetime:
 
 
 class TestSessionReset:
-    """5-hour UTC buckets, strictly-greater ceil."""
+    """5-hour buckets on the EPOCH lattice (t ≡ 0 mod 18000), strictly-greater ceil.
+
+    Regression rows from the v0.3 live validation (2026-10-07).  Because
+    5 h ∤ 24 h the boundaries drift 4 h earlier per day on a 5-day cycle;
+    every expected value below is on the epoch lattice and on no
+    day-anchored lattice.
+    """
+
+    def test_live_balance_oct7(self) -> None:
+        """2026-10-07T03:17:54Z → 08:00:00Z (live /api/balance, phase-3 day)."""
+        assert next_session_reset(_utc("2026-10-07T03:17:54Z")) == _utc(
+            "2026-10-07T08:00:00Z"
+        )
+
+    def test_user_observed_rollover_oct7(self) -> None:
+        """2026-10-07T02:55:00Z → 03:00:00Z (user-observed rollover)."""
+        assert next_session_reset(_utc("2026-10-07T02:55:00Z")) == _utc(
+            "2026-10-07T03:00:00Z"
+        )
+
+    def test_official_docs_example(self) -> None:
+        """2026-10-01T05:00:00Z → 07:00:00Z (docs' session.resets_at example)."""
+        assert next_session_reset(_utc("2026-10-01T05:00:00Z")) == _utc(
+            "2026-10-01T07:00:00Z"
+        )
+
+    def test_settings_data_time_sep14(self) -> None:
+        """2026-09-14T11:00:00Z → 15:00:00Z (settings data-time evidence)."""
+        assert next_session_reset(_utc("2026-09-14T11:00:00Z")) == _utc(
+            "2026-09-14T15:00:00Z"
+        )
+
+    def test_exactly_on_boundary_is_strictly_greater(self) -> None:
+        """Exactly on a boundary → the NEXT boundary (spec: strictly-greater)."""
+        assert next_session_reset(_utc("2026-10-07T08:00:00Z")) == _utc(
+            "2026-10-07T13:00:00Z"
+        )
 
     def test_mid_bucket(self) -> None:
         """2026-09-14T11:00:00Z → 15:00:00Z."""
@@ -26,7 +62,7 @@ class TestSessionReset:
             "2026-09-14T15:00:00Z"
         )
 
-    def test_exactly_on_boundary_is_strictly_greater(self) -> None:
+    def test_exactly_on_boundary_sep14(self) -> None:
         """15:00:00Z exactly → 20:00:00Z (next boundary, not itself)."""
         assert next_session_reset(_utc("2026-09-14T15:00:00Z")) == _utc(
             "2026-09-14T20:00:00Z"

@@ -10,13 +10,6 @@
           "scan_interval": "Scan interval (seconds)"
         }
       },
-      "verify": {
-        "title": "Verify reset model (optional)",
-        "description": "Computed next resets (UTC):\n- Session: {session_reset}\n- Weekly: {weekly_reset}\n\nOptionally paste `data-time` attribute values from {settings_url} (space or comma separated). Values disagreeing with the model by more than 5 minutes set the divergence flag — setup still completes. Leave empty to skip.",
-        "data": {
-          "verify_data_times": "Pasted data-time values (optional)"
-        }
-      },
       "reauth_confirm": {
         "title": "Re-authenticate AX Ollama Usage Tracker",
         "description": "Your Ollama Cloud API key was rejected. Enter a new key (create at ollama.com → Settings → API keys).",
@@ -27,6 +20,7 @@
     },
     "error": {
       "invalid_auth": "Invalid credentials — the API key was rejected by ollama.com.",
+      "suspended": "Account suspended or team scope requested without team admin access — the API key itself is valid.",
       "cannot_connect": "Cannot connect to ollama.com. Check your network and try again."
     },
     "abort": {
@@ -38,15 +32,31 @@
       "init": {
         "title": "AX Ollama Usage Tracker options",
         "data": {
-          "scan_interval": "Scan interval (seconds)"
+          "scan_interval": "Scan interval (seconds)",
+          "enable_watchdog": "Enable the reset-divergence watchdog (optional cross-check of server reset times against the reverse-engineered model)"
         }
       }
     }
   },
   "entity": {
     "sensor": {
-      "activity_cost": {
-        "name": "Activity Cost"
+      "requests_24h": {
+        "name": "Requests 24h"
+      },
+      "requests_7d": {
+        "name": "Requests 7d"
+      },
+      "purchased_balance": {
+        "name": "Purchased Balance"
+      },
+      "included_balance": {
+        "name": "Included Balance"
+      },
+      "included_allowance": {
+        "name": "Included Allowance"
+      },
+      "included_resets_at": {
+        "name": "Included Resets At"
       },
       "clock_skew": {
         "name": "Clock Skew"

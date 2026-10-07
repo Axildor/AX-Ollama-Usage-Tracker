@@ -1,15 +1,32 @@
 """Pure reset-time model for Ollama Cloud usage windows.
 
 Reverse-engineered, deterministic — treat as a model, not a contract.
+Since v0.3 the server returns ``resets_at`` directly (passthrough,
+authoritative); this model survives only inside the opt-in divergence
+watchdog cross-check.
 
 - **Weekly** resets Monday 00:00:00 UTC.  Evidence: settings-page
   ``data-time="2026-09-21T00:00:00Z"`` with the current window opened
-  ``2026-09-14T00:00:00Z`` (a Monday).
-- **Session** resets in fixed 5-hour buckets on the UTC lattice anchored
-  at 00:00 UTC.  Evidence: settings-page ``data-time`` values
-  ``2026-09-14T05:00:00Z`` and ``2026-09-14T15:00:00Z`` — both ≡ 0
-  (mod 5h), ten hours apart.  A third confirming observation is pending,
-  so this ships as the default model, not a hard constant.
+  ``2026-09-14T00:00:00Z`` (a Monday); live cross-check passed
+  2026-10-07 (server ``resets_at`` 2026-10-12T00:00:00Z, a Monday).
+- **Session** resets in fixed 5-hour buckets anchored in EPOCH time —
+  ``t ≡ 0 (mod 18000 Unix seconds)`` — NOT to the UTC day.  Formula:
+  ``next_reset = ((now_epoch // 18000) + 1) * 18000`` (strictly-greater
+  ceil).  Because 5 h does not divide 24 h, the boundaries drift 4 h
+  earlier each day on a 5-day cycle, then realign:
+
+      cycle day 0: 00/05/10/15/20 · day 1: 01/06/11/16/21 ·
+      day 2: 02/07/12/17/22 · day 3: 03/08/13/18/23 · day 4: 04/09/14/19
+
+  Evidence (all on the epoch lattice, none on a day-anchored lattice):
+  settings-page ``data-time`` values 2026-09-14T05:00:00Z and
+  2026-09-14T15:00:00Z; the official docs' example
+  ``session.resets_at: 2026-10-01T07:00:00Z``; live /api/balance
+  2026-10-07 returning ``resets_at`` 08:00:00Z (a phase-3 day); and the
+  user-observed rollover at 03:00Z on Oct 7 — on no static day lattice.
+  Sanity anchor: Sep 14 00:00Z + 555 h = Oct 7 03:00Z, and 555 h is
+  exactly 111 x 5 h — one lattice, one formula.  The 8-hour-lattice
+  hypothesis is refuted by all of the above.
 - **Any other window** (``daily``, ``monthly``, unknown keys): reset
   anchor UNKNOWN — :func:`next_reset_for_window` returns ``None`` and the
   resets sensor reports ``unknown``.  No anchor is fabricated.
