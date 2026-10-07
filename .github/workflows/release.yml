@@ -24,7 +24,7 @@ jobs:
       - name: Resolve curated release notes
         id: notes
         run: |
-          notes_file=".github/release-notes/${{ steps.version.outputs.version }}.md"
+          notes_file=".github/release-notes/${GITHUB_REF_NAME}.md"
           if [ -f "$notes_file" ]; then
             echo "body_path=$notes_file" >> "$GITHUB_OUTPUT"
           else
