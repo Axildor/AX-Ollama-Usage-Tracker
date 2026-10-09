@@ -12,7 +12,8 @@ much of your session and weekly quota is left, track your request volume, watch
 your purchased credits, and get notified before you run out, all inside Home
 Assistant.
 
-<img width="1002" height="895" alt="image" src="https://github.com/user-attachments/assets/f8589afa-0e08-4481-831d-ed2b6709168a" />
+<img width="981" height="826" alt="image" src="https://github.com/user-attachments/assets/ad5e0ef2-4ced-4b43-87eb-d8708b246dcf" />
+
 
 ## Sensors
 
